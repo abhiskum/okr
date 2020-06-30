@@ -1,106 +1,137 @@
 package com.gs.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-import java.util.Collection;
-import java.util.Date;
-
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
 
 @Entity
 public class Objective extends PanacheEntity {
 
     private String title;
     private String description;
-    @ManyToOne private ObjectiveType type;
-    @ManyToOne private Objective parent;
-    @OneToMany private Collection<KeyResult> keyResults;
-    @OneToMany private Collection<Objective> children;
-    @ManyToOne private OrgHierarchy hierarchy;
-    @ManyToOne private User owner;
+
+    @ManyToOne
+    @JoinColumn(name = "type_id")
+    private ObjectiveType type;
+
+    @ManyToOne
+    @JoinColumn(name = "parent_id")
+    @JsonBackReference
+    private Objective parent;
+
+    @OneToMany(mappedBy = "parent")
+    @JsonManagedReference
+    private Collection<Objective> children = new HashSet<>();
+
+    @OneToMany(mappedBy = "objective")
+    private Collection<KeyResult> keyResults = new HashSet<>();
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
     private Date startDate;
     private Date endDate;
+
+    private String status;
 
     public String getTitle() {
         return title;
     }
 
-    public Objective setTitle(String title) {
+    public void setTitle(String title) {
         this.title = title;
-        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public Objective setDescription(String description) {
+    public void setDescription(String description) {
         this.description = description;
-        return this;
     }
 
     public ObjectiveType getType() {
         return type;
     }
 
-    public Objective setType(ObjectiveType type) {
+    public void setType(ObjectiveType type) {
         this.type = type;
-        return this;
     }
 
     public Objective getParent() {
         return parent;
     }
 
-    public Objective setParent(Objective parent) {
+    public void setParent(Objective parent) {
         this.parent = parent;
-        return this;
-    }
-
-    public Collection<KeyResult> getKeyResults() {
-        return keyResults;
-    }
-
-    public Objective setKeyResults(Collection<KeyResult> keyResults) {
-        this.keyResults = keyResults;
-        return this;
     }
 
     public Collection<Objective> getChildren() {
         return children;
     }
 
-    public Objective setChildren(Collection<Objective> children) {
+    public void setChildren(Collection<Objective> children) {
         this.children = children;
-        return this;
+    }
+
+    public Collection<KeyResult> getKeyResults() {
+        return keyResults;
+    }
+
+    public void setKeyResults(Collection<KeyResult> keyResults) {
+        this.keyResults = keyResults;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 
     public User getOwner() {
         return owner;
     }
 
-    public Objective setOwner(User owner) {
+    public void setOwner(User owner) {
         this.owner = owner;
-        return this;
     }
 
     public Date getStartDate() {
         return startDate;
     }
 
-    public Objective setStartDate(Date startDate) {
+    public void setStartDate(Date startDate) {
         this.startDate = startDate;
-        return this;
     }
 
     public Date getEndDate() {
         return endDate;
     }
 
-    public Objective setEndDate(Date endDate) {
+    public void setEndDate(Date endDate) {
         this.endDate = endDate;
-        return this;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }
