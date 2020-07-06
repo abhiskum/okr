@@ -19,6 +19,10 @@ Be aware that it’s not an _über-jar_ as the dependencies are copied into the 
 
 The application is now runnable using `java -jar target/okr-1.0.0-runner.jar`.
 
+## Building uber jar and running the application
+
+    ./mvnw clean install -Dquarkus.package.uber-jar=true -Dquarkus.http.port=80
+
 ## Creating a native executable
 
 You can create a native executable using: `./mvnw package -Pnative`.
