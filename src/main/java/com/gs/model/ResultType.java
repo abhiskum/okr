@@ -1,8 +1,8 @@
 package com.gs.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 import java.util.Collection;
@@ -12,7 +12,9 @@ public class ResultType extends PanacheEntity {
 
     private String type;
     private String label;
-    @OneToMany(mappedBy = "type", cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "type")
+    @JsonManagedReference
     private Collection<KeyResult> keyResults;
 
     public String getType() {

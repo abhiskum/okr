@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -18,8 +19,9 @@ public class Objective extends PanacheEntity {
     private String title;
     private String description;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "type_id")
+    @JsonBackReference
     private ObjectiveType type;
 
     @ManyToOne
@@ -32,6 +34,7 @@ public class Objective extends PanacheEntity {
     private Collection<Objective> children = new HashSet<>();
 
     @OneToMany(mappedBy = "objective")
+    @JsonManagedReference
     private Collection<KeyResult> keyResults = new HashSet<>();
 
     @ManyToOne

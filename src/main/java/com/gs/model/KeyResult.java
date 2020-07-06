@@ -1,5 +1,6 @@
 package com.gs.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.CascadeType;
@@ -14,10 +15,12 @@ public class KeyResult extends PanacheEntity {
     private String description;
     @ManyToOne(optional = false,cascade = CascadeType.ALL)
     @JoinColumn(name = "type_id")
+    @JsonBackReference
     private ResultType type;
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "objective_id")
+    @JsonBackReference
     private Objective objective;
 
     @ManyToOne

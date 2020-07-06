@@ -1,5 +1,6 @@
 package com.gs.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 
 import javax.persistence.Entity;
@@ -14,6 +15,7 @@ public class ObjectiveType extends PanacheEntity {
     private String label;
 
     @OneToMany(mappedBy = "type")
+    @JsonManagedReference
     private Collection<Objective> objectives = new HashSet<>();
 
     public String getType() {
