@@ -2,29 +2,36 @@ package com.gs.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gs.util.LocalDateDeserializer;
+import com.gs.util.LocalDateSerializer;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 @Entity
+@Schema(name="Objectives",
+        description="POJO that represents an objective.")
 public class Objective extends PanacheEntity {
 
+    @Schema(required = true)
     private String title;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "type_id")
-    @JsonBackReference
     private ObjectiveType type;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "parent_id")
     @JsonBackReference
     private Objective parent;
@@ -33,20 +40,25 @@ public class Objective extends PanacheEntity {
     @JsonManagedReference
     private Collection<Objective> children = new HashSet<>();
 
-    @OneToMany(mappedBy = "objective")
-    @JsonManagedReference
-    private Collection<KeyResult> keyResults = new HashSet<>();
-
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @Schema(required = true)
     private Department department;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @Schema(required = true)
     private User owner;
 
-    private Date startDate;
-    private Date endDate;
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Schema(required = true)
+    private LocalDate startDate;
+
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Schema(required = true)
+    private LocalDate endDate;
 
     private String status;
 
@@ -90,14 +102,6 @@ public class Objective extends PanacheEntity {
         this.children = children;
     }
 
-    public Collection<KeyResult> getKeyResults() {
-        return keyResults;
-    }
-
-    public void setKeyResults(Collection<KeyResult> keyResults) {
-        this.keyResults = keyResults;
-    }
-
     public Department getDepartment() {
         return department;
     }
@@ -114,19 +118,19 @@ public class Objective extends PanacheEntity {
         this.owner = owner;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
 

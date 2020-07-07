@@ -1,20 +1,23 @@
 package com.gs.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import java.util.Collection;
 import java.util.HashSet;
 
 @Entity
+@Schema(name="User",
+        description="POJO that represents a user.")
 public class User extends PanacheEntity {
 
+    @Schema(required = true)
     private String firstName;
+    @Schema(required = true)
     private String lastName;
 
     @ManyToMany
@@ -23,15 +26,8 @@ public class User extends PanacheEntity {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "department_id") }
     )
+    @Schema(required = true)
     private Collection<Department> departments = new HashSet<>();
-
-    @OneToMany(mappedBy = "owner")
-    @JsonIgnore
-    private Collection<Objective> objectives = new HashSet<>();
-
-    @OneToMany(mappedBy = "owner")
-    @JsonIgnore
-    private Collection<KeyResult> keyResults = new HashSet<>();
 
     public String getFirstName() {
         return firstName;
@@ -55,21 +51,5 @@ public class User extends PanacheEntity {
 
     public void setDepartments(Collection<Department> departments) {
         this.departments = departments;
-    }
-
-    public Collection<Objective> getObjectives() {
-        return objectives;
-    }
-
-    public void setObjectives(Collection<Objective> objectives) {
-        this.objectives = objectives;
-    }
-
-    public Collection<KeyResult> getKeyResults() {
-        return keyResults;
-    }
-
-    public void setKeyResults(Collection<KeyResult> keyResults) {
-        this.keyResults = keyResults;
     }
 }

@@ -17,7 +17,7 @@ import java.util.Collection;
 /**
  * Created by degandhi on 6/30/20.
  */
-@Path("/keyResults")
+@Path("/keyresults")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class KeyResultResource {

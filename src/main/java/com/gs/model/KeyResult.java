@@ -1,7 +1,7 @@
 package com.gs.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -9,26 +9,32 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 @Entity
+@Schema(name="KeyResult",
+        description="POJO that represents a key result.")
 public class KeyResult extends PanacheEntity {
 
+    @Schema(required = true)
     private String title;
     private String description;
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @JoinColumn(name = "type_id")
-    @JsonBackReference
+    @Schema(required = true)
     private ResultType type;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @JoinColumn(name = "objective_id")
-    @JsonBackReference
+    @Schema(required = true)
     private Objective objective;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
+    @Schema(required = true)
     private Department department;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
+    @Schema(required = true)
     private User owner;
 
     /*private Integer status;

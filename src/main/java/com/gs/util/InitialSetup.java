@@ -11,8 +11,8 @@ import io.quarkus.runtime.StartupEvent;
 import javax.enterprise.event.Observes;
 import javax.inject.Singleton;
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 
 /**
@@ -47,8 +47,8 @@ public class InitialSetup {
         objective.setDepartment(department);
         objective.setOwner(owner);
         objective.setType(objectiveType);
-        objective.setStartDate(new Date());
-        objective.setEndDate(new Date());
+        objective.setStartDate(LocalDate.now());
+        objective.setEndDate(LocalDate.now());
         objective.setStatus("In progress");
         Objective.persist(objective);
 

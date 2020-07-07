@@ -1,21 +1,19 @@
 package com.gs.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.Collection;
 
 @Entity
+@Schema(name="ResultType",
+        description="POJO that represents a result type.")
 public class ResultType extends PanacheEntity {
 
+    @Schema(required = true)
     private String type;
+    @Schema(required = true)
     private String label;
-
-    @OneToMany(mappedBy = "type")
-    @JsonManagedReference
-    private Collection<KeyResult> keyResults;
 
     public String getType() {
         return type;
@@ -35,11 +33,4 @@ public class ResultType extends PanacheEntity {
         return this;
     }
 
-    public Collection<KeyResult> getKeyResults() {
-        return keyResults;
-    }
-
-    public void setKeyResults(Collection<KeyResult> keyResults) {
-        this.keyResults = keyResults;
-    }
 }

@@ -1,22 +1,19 @@
 package com.gs.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
-import java.util.Collection;
-import java.util.HashSet;
 
 @Entity
+@Schema(name="ObjectiveType",
+        description="POJO that represents a objective type.")
 public class ObjectiveType extends PanacheEntity {
 
+    @Schema(required = true)
     private String type;
+    @Schema(required = true)
     private String label;
-
-    @OneToMany(mappedBy = "type")
-    @JsonManagedReference
-    private Collection<Objective> objectives = new HashSet<>();
 
     public String getType() {
         return type;
@@ -34,13 +31,5 @@ public class ObjectiveType extends PanacheEntity {
     public ObjectiveType setLabel(String label) {
         this.label = label;
         return this;
-    }
-
-    public Collection<Objective> getObjectives() {
-        return objectives;
-    }
-
-    public void setObjectives(Collection<Objective> objectives) {
-        this.objectives = objectives;
     }
 }
