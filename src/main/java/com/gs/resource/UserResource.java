@@ -3,6 +3,8 @@ package com.gs.resource;
 import com.gs.model.Objective;
 import com.gs.model.User;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -20,6 +22,9 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class UserResource {
+
+    @Inject
+    private EntityManager entityManager;
 
     @GET
     public Collection<User> getUsers() {
@@ -45,15 +50,32 @@ public class UserResource {
     @Path("/{id}")
     public User updateUser(@PathParam("id") Long id, User user) {
         user.id = id;
-        User.update("firstName = ?1, lastName = ?2 where id = ?3",
-                user.getFirstName(), user.getLastName(), id);
-        return user;
+        return entityManager.merge(user);
+    }
+
+    /*@POST
+    @Transactional
+    @Path("/{id}/departments/")
+    public int addUserDepartment(@PathParam("id") Long id, Department department) {
+        Collection<Department> departments = new HashSet<>();
+        departments.add(department);
+        return User.update("departments = ?1 where id = ?2",
+                departments, id);
     }
 
     @DELETE
     @Transactional
+    @Path("/{id}/departments/{departmentId}")
+    public int deleteUserDepartment(@PathParam("id") Long id, @PathParam("departmentId") Long departmentId) {
+        User user = User.findById(id);
+        return User.update("departments = ?1 where id = ?2",
+                departments, id);
+    }*/
+
+    @DELETE
+    @Transactional
     @Path("/{id}")
-    public Boolean deleteUser(@PathParam("id") Long id){
+    public Boolean deleteUser(@PathParam("id") Long id) {
         return User.deleteById(id);
     }
 

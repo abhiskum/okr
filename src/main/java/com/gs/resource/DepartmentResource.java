@@ -41,16 +41,16 @@ public class DepartmentResource {
     @Transactional
     @Path("/{id}")
     public Department updateDepartment(@PathParam("id") Long id, Department department) {
-        department.id = id;
-        Department.update("name = ?1, parent = ?2 where id = ?3",
-                department.getName(), department.getParent(), id);
+        department.id=id;
+        Long parentId = department.getParent() == null ? null : department.getParent().id;
+        Department.update("name = ?1, parent_id = ?2 where id = ?3", department.getName(), parentId, id);
         return department;
     }
 
     @DELETE
     @Transactional
     @Path("/{id}")
-    public Boolean deleteDepartment(@PathParam("id") Long id){
+    public Boolean deleteDepartment(@PathParam("id") Long id) {
         return Department.deleteById(id);
     }
 

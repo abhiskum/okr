@@ -4,7 +4,6 @@ import com.gs.model.Department;
 import com.gs.model.KeyResult;
 import com.gs.model.Objective;
 import com.gs.model.ObjectiveType;
-import com.gs.model.ResultType;
 import com.gs.model.User;
 import io.quarkus.runtime.StartupEvent;
 
@@ -35,7 +34,6 @@ public class InitialSetup {
         owner.setDepartments(departments);
         User.persist(owner);
 
-
         ObjectiveType objectiveType = new ObjectiveType();
         objectiveType.setLabel("Company");
         objectiveType.setType("Company");
@@ -52,15 +50,11 @@ public class InitialSetup {
         objective.setStatus("In progress");
         Objective.persist(objective);
 
-        ResultType resultType = new ResultType();
-        resultType.setLabel("Binary");
-        resultType.setType("Binary");
-        ResultType.persist(resultType);
-
         KeyResult keyResult = new KeyResult();
         keyResult.setTitle("title");
         keyResult.setDescription("test description");
-        keyResult.setType(resultType);
+        keyResult.setCurrentState(0L);
+        keyResult.setTargetState(100L);
         keyResult.setObjective(objective);
         keyResult.setDepartment(department);
         keyResult.setOwner(owner);
