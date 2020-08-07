@@ -1,7 +1,9 @@
 package com.gs.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.gs.util.LocalDateDeserializer;
@@ -21,6 +23,7 @@ import java.util.HashSet;
 @Entity
 @Schema(name="Objectives",
         description="POJO that represents an objective.")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "@id")
 public class Objective extends PanacheEntity {
 
     @Schema(required = true)
@@ -60,7 +63,12 @@ public class Objective extends PanacheEntity {
     @Schema(required = true)
     private LocalDate endDate;
 
+    @OneToMany(mappedBy = "objective", cascade = CascadeType.ALL)
+    private Collection<KeyResult> keyResults = new HashSet<>();
+
     private String status;
+
+    private String notes;
 
     public String getTitle() {
         return title;
@@ -140,5 +148,21 @@ public class Objective extends PanacheEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Collection<KeyResult> getKeyResults() {
+        return keyResults;
+    }
+
+    public void setKeyResults(Collection<KeyResult> keyResults) {
+        this.keyResults = keyResults;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
