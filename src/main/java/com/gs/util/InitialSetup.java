@@ -26,6 +26,11 @@ public class InitialSetup {
         department.setName("dummy department");
         Department.persist(department);
 
+        Department department2 = new Department();
+        department2.setName("department2");
+        department2.setParent(department);
+        Department.persist(department2);
+
         User owner = new User();
         owner.setFirstName("first name");
         owner.setLastName("last name");
@@ -50,12 +55,24 @@ public class InitialSetup {
         objective.setStatus("In progress");
         Objective.persist(objective);
 
+        Objective objective1 = new Objective();
+        objective1.setTitle("test1");
+        objective1.setDescription("test description1");
+        objective1.setDepartment(department);
+        objective1.setOwner(owner);
+        objective1.setType(objectiveType);
+        objective1.setStartDate(LocalDate.now());
+        objective1.setEndDate(LocalDate.now());
+        objective1.setStatus("Closed");
+        objective1.setParent(objective);
+        Objective.persist(objective1);
+
         KeyResult keyResult = new KeyResult();
         keyResult.setTitle("title");
         keyResult.setDescription("test description");
         keyResult.setCurrentState(0L);
         keyResult.setTargetState(100L);
-        keyResult.setObjective(objective);
+        keyResult.setObjective(objective1);
         keyResult.setDepartment(department);
         keyResult.setOwner(owner);
         KeyResult.persist(keyResult);

@@ -1,7 +1,6 @@
 package com.gs.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
@@ -13,7 +12,6 @@ import javax.persistence.ManyToOne;
 @Entity
 @Schema(name="KeyResult",
         description="POJO that represents a key result.")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class KeyResult extends PanacheEntity {
 
     @Schema(required = true)
@@ -24,11 +22,13 @@ public class KeyResult extends PanacheEntity {
     @ManyToOne(optional = false, cascade = CascadeType.MERGE)
     @JoinColumn(name = "objective_id",nullable = false)
     @Schema(required = true)
+    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes"})
     private Objective objective;
 
     @ManyToOne
     @JoinColumn(name = "department_id")
     @Schema(required = true)
+    @JsonIgnoreProperties({"parent","children","users"})
     private Department department;
 
     @ManyToOne
