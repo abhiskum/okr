@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
@@ -21,13 +20,13 @@ public class Department extends PanacheEntity {
     @Schema(required = true)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonIgnoreProperties({"children", "users"})
+    @JsonIgnoreProperties({"name","parent","children", "users"})
     private Department parent;
 
     @OneToMany(mappedBy = "parent")
-    @JsonIgnoreProperties({"parent"})
+    @JsonIgnoreProperties({"name","parent","children", "users"})
     private Collection<Department> children = new HashSet<>();
 
     @ManyToMany(mappedBy = "departments")
