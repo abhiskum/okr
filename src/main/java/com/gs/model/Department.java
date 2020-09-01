@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -22,14 +23,14 @@ public class Department extends PanacheEntity {
 
     @ManyToOne
     @JoinColumn(name = "parent_id")
-    @JsonIgnoreProperties({"name","parent","children", "users"})
+    @JsonIgnoreProperties({"name", "parent", "children", "users"})
     private Department parent;
 
-    @OneToMany(mappedBy = "parent")
-    @JsonIgnoreProperties({"name","parent","children", "users"})
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"name", "parent", "children", "users"})
     private Collection<Department> children = new HashSet<>();
 
-    @ManyToMany(mappedBy = "departments")
+    @ManyToMany(mappedBy = "departments", fetch = FetchType.EAGER)
     @JsonIgnoreProperties({"departments"})
     private Collection<User> users = new HashSet<>();
 

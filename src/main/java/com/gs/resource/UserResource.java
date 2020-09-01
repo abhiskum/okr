@@ -1,5 +1,6 @@
 package com.gs.resource;
 
+import com.gs.model.Department;
 import com.gs.model.Objective;
 import com.gs.model.User;
 
@@ -16,6 +17,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Path("/users")
@@ -41,6 +43,14 @@ public class UserResource {
     @POST
     @Transactional
     public User createUser(User user) {
+        if (!user.getDepartments().isEmpty()) {
+            Collection<Department> userDepartments = new HashSet<>();
+            for (Department dept : user.getDepartments()) {
+                Department department = entityManager.getReference(Department.class, dept.id);
+                userDepartments.add(department);
+            }
+            user.setDepartments(userDepartments);
+        }
         User.persist(user);
         return user;
     }
@@ -52,25 +62,6 @@ public class UserResource {
         user.id = id;
         return entityManager.merge(user);
     }
-
-    /*@POST
-    @Transactional
-    @Path("/{id}/departments/")
-    public int addUserDepartment(@PathParam("id") Long id, Department department) {
-        Collection<Department> departments = new HashSet<>();
-        departments.add(department);
-        return User.update("departments = ?1 where id = ?2",
-                departments, id);
-    }
-
-    @DELETE
-    @Transactional
-    @Path("/{id}/departments/{departmentId}")
-    public int deleteUserDepartment(@PathParam("id") Long id, @PathParam("departmentId") Long departmentId) {
-        User user = User.findById(id);
-        return User.update("departments = ?1 where id = ?2",
-                departments, id);
-    }*/
 
     @DELETE
     @Transactional

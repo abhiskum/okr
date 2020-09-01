@@ -10,6 +10,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -30,13 +31,13 @@ public class Objective extends PanacheEntity {
     @JoinColumn(name = "type_id")
     private ObjectiveType type;
 
-    @ManyToOne(cascade = CascadeType.MERGE)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "parent_id")
-    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes"})
+    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes","completion"})
     private Objective parent;
 
-    @OneToMany(mappedBy = "parent")
-    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes"})
+    @OneToMany(mappedBy = "parent", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes","completion"})
     private Collection<Objective> children = new HashSet<>();
 
     @ManyToOne
@@ -66,6 +67,8 @@ public class Objective extends PanacheEntity {
     private String status;
 
     private String notes;
+
+    private Double completion;
 
     public String getTitle() {
         return title;
@@ -161,5 +164,13 @@ public class Objective extends PanacheEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public Double getCompletion() {
+        return completion;
+    }
+
+    public void setCompletion(Double completion) {
+        this.completion = completion;
     }
 }
