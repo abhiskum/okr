@@ -67,14 +67,13 @@ public class InitialSetup {
         objective1.setParent(objective);
         Objective.persist(objective1);
 
-        KeyResult keyResult = new KeyResult();
-        keyResult.setTitle("title");
-        keyResult.setDescription("test description");
-        keyResult.setCurrentState(0L);
-        keyResult.setTargetState(100L);
-        keyResult.setObjective(objective1);
-        keyResult.setDepartment(department);
-        keyResult.setOwner(owner);
-        KeyResult.persist(keyResult);
+        KeyResult keyResult1 = new KeyResult();
+        keyResult1.setTitle("title");
+        keyResult1.setDescription("test description");
+        keyResult1.setCurrentState(100D);
+        keyResult1.setObjective(objective1);
+        keyResult1.setOwner(owner);
+        keyResult1.setCompletion(keyResult1.getCurrentState()/100);
+        KeyResult.persist(keyResult1);
     }
 }

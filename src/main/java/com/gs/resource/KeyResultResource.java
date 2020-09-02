@@ -1,7 +1,10 @@
 package com.gs.resource;
 
 import com.gs.model.KeyResult;
+import com.gs.model.Objective;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,6 +25,9 @@ import java.util.Collection;
 @Produces(MediaType.APPLICATION_JSON)
 public class KeyResultResource {
 
+    @Inject
+    private EntityManager entityManager;
+
     @GET
     public Collection<KeyResult> getKeyResults() {
         return KeyResult.listAll();
@@ -36,6 +42,10 @@ public class KeyResultResource {
     @POST
     @Transactional
     public KeyResult createKeyResult(KeyResult keyResult) {
+        if(keyResult.getObjective() != null && keyResult.getObjective().id != null){
+            Objective objective = entityManager.getReference(Objective.class, keyResult.getObjective().id);
+            keyResult.setObjective(objective);
+        }
         KeyResult.persist(keyResult);
         return keyResult;
     }
@@ -45,12 +55,7 @@ public class KeyResultResource {
     @Path("/{id}")
     public KeyResult updateKeyResult(@PathParam("id") Long id, KeyResult keyResult) {
         keyResult.id = id;
-        Long objectiveId = keyResult.getObjective() != null ? keyResult.getObjective().id : null;
-        Long departmentId = keyResult.getDepartment() != null ? keyResult.getDepartment().id : null;
-        Long ownerId = keyResult.getOwner() != null ? keyResult.getOwner().id : null;
-        KeyResult.update("title = ?1, description = ?2, objective_id = ?3, owner_id = ?4,  department_id = ?5 where id = ?6",
-                keyResult.getTitle(), keyResult.getDescription(), objectiveId, departmentId, ownerId, id);
-        return keyResult;
+        return entityManager.merge(keyResult);
     }
 
     @DELETE

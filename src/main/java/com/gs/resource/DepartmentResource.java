@@ -2,6 +2,8 @@ package com.gs.resource;
 
 import com.gs.model.Department;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,6 +20,9 @@ import java.util.Collection;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class DepartmentResource {
+
+    @Inject
+    private EntityManager entityManager;
 
     @GET
     public Collection<Department> getDepartments() {
@@ -40,11 +45,11 @@ public class DepartmentResource {
     @PUT
     @Transactional
     @Path("/{id}")
-    public Department updateDepartment(@PathParam("id") Long id, Department department) {
-        department.id=id;
-        Long parentId = department.getParent() == null ? null : department.getParent().id;
-        Department.update("name = ?1, parent_id = ?2 where id = ?3", department.getName(), parentId, id);
-        return department;
+    public Department updateDepartment(@PathParam("id") Long id, Department dept) {
+        Department department = entityManager.find(Department.class, id);
+        department.setName(dept.getName());
+        department.setParent(dept.getParent());
+        return entityManager.merge(department);
     }
 
     @DELETE

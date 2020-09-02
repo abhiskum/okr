@@ -2,6 +2,8 @@ package com.gs.resource;
 
 import com.gs.model.Objective;
 
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -18,17 +20,11 @@ import javax.ws.rs.core.MediaType;
 @Produces(MediaType.APPLICATION_JSON)
 public class ObjectiveResource {
 
+    @Inject
+    private EntityManager entityManager;
+
     @GET
     public Object getObjectives() {
-        /*
-        @Context UriInfo uriInfo
-        MultivaluedMap<String, String> params = uriInfo.getQueryParameters();
-        if (params.size() > 0) {
-            if (params.containsKey("parentId")) {
-                return Objective.find("where parent_id = ?1", params.get("parentId"));
-            }
-        } else {}
-        return null;*/
         return Objective.listAll();
 
     }
@@ -38,26 +34,6 @@ public class ObjectiveResource {
     public Objective getObjectiveById(@PathParam("id") Long id) {
         return Objective.findById(id);
     }
-
-    /*@GET
-    public Objective getObjectiveByParentId(@QueryParam("parent_id") Long id) {
-        return (Objective) Objective.find("where parent_id = ?1", id);
-    }
-
-    @GET
-    public Objective getObjectiveByDepartmentId(@QueryParam("department_id") Long id) {
-        return (Objective) Objective.find("where department_id = ?1", id);
-    }
-
-    @GET
-    public Objective getObjectiveByTypeId(@QueryParam("type_id") Long id) {
-        return (Objective) Objective.find("where type_id = ?1", id);
-    }
-
-    @GET
-    public Objective getObjectiveByOwnerId(@QueryParam("owner_id") Long id) {
-        return (Objective) Objective.find("where owner_id = ?1", id);
-    }*/
 
     @POST
     @Transactional
@@ -69,17 +45,22 @@ public class ObjectiveResource {
     @PUT
     @Transactional
     @Path("/{id}")
-    public Objective updateObjective(@PathParam("id") Long id, Objective objective) {
-        objective.id = id;
-        Long typeId = objective.getType() != null ? objective.getType().id : null;
-        Long departmentId = objective.getDepartment() != null ? objective.getDepartment().id : null;
-        Long ownerId = objective.getOwner() != null ? objective.getOwner().id : null;
-        Long parentId = objective.getParent() != null ? objective.getParent().id : null;
-
-        Objective.update("title = ?1, description = ?2, type_id = ?3, parent_id = ?4, department_id = ?5, owner_id = ?6, start_date = ?7, end_date = ?8, status = ?9" +
-                        " where id = ?10",
-                objective.getTitle(), objective.getDescription(), typeId, parentId, departmentId, ownerId, objective.getStartDate(), objective.getEndDate(), objective.getStatus(), id);
-        return objective;
+    public Objective updateObjective(@PathParam("id") Long id, Objective obj) {
+        Objective objective = entityManager.find(Objective.class, id);
+        objective.setTitle(obj.getTitle());
+        objective.setDescription(obj.getDescription());
+        objective.setParent(obj.getParent());
+        objective.setDepartment(obj.getDepartment());
+        objective.setType(obj.getType());
+        objective.setOwner(obj.getOwner());
+        objective.setType(obj.getType());
+        objective.setStartDate(obj.getStartDate());
+        objective.setEndDate(obj.getEndDate());
+        objective.setStatus(obj.getStatus());
+        objective.setKeyResults(obj.getKeyResults());
+        objective.setNotes(obj.getNotes());
+        objective.setCompletion(obj.getCompletion());
+        return entityManager.merge(objective);
     }
 
     @DELETE

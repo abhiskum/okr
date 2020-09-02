@@ -1,13 +1,18 @@
 package com.gs.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.gs.util.LocalDateDeserializer;
+import com.gs.util.LocalDateSerializer;
 import io.quarkus.hibernate.orm.panache.PanacheEntity;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.time.LocalDate;
 
 @Entity
 @Schema(name="KeyResult",
@@ -19,17 +24,11 @@ public class KeyResult extends PanacheEntity {
 
     private String description;
 
-    @ManyToOne(optional = false, cascade = CascadeType.MERGE)
-    @JoinColumn(name = "objective_id",nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "objective_id", nullable = false)
     @Schema(required = true)
-    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes"})
+    @JsonIgnoreProperties({"title","description","type","parent","children","department","owner","startDate","endDate","keyResults","status","notes","completion"})
     private Objective objective;
-
-    @ManyToOne
-    @JoinColumn(name = "department_id")
-    @Schema(required = true)
-    @JsonIgnoreProperties({"parent","children","users"})
-    private Department department;
 
     @ManyToOne
     @JoinColumn(name = "owner_id")
@@ -37,12 +36,21 @@ public class KeyResult extends PanacheEntity {
     private User owner;
 
     @Schema(required = true)
-    private Long currentState;
-
-    @Schema(required = true)
-    private Long targetState;
+    private Double currentState;
 
     private String notes;
+
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Schema(required = true)
+    private LocalDate startDate;
+
+    @JsonDeserialize(using = LocalDateDeserializer.class)
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @Schema(required = true)
+    private LocalDate endDate;
+
+    private Double completion;
 
     public String getTitle() {
         return title;
@@ -68,14 +76,6 @@ public class KeyResult extends PanacheEntity {
         this.objective = objective;
     }
 
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
     public User getOwner() {
         return owner;
     }
@@ -84,20 +84,28 @@ public class KeyResult extends PanacheEntity {
         this.owner = owner;
     }
 
-    public Long getCurrentState() {
+    public Double getCurrentState() {
         return currentState;
     }
 
-    public void setCurrentState(Long currentState) {
+    public void setCurrentState(Double currentState) {
         this.currentState = currentState;
     }
 
-    public Long getTargetState() {
-        return targetState;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setTargetState(Long targetState) {
-        this.targetState = targetState;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public String getNotes() {
@@ -106,5 +114,13 @@ public class KeyResult extends PanacheEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public Double getCompletion() {
+        return completion;
+    }
+
+    public void setCompletion(Double completion) {
+        this.completion = completion;
     }
 }
